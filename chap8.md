@@ -4,7 +4,7 @@ Hongyun Wang
 May 6, 2018
 
 3.
-==
+--
 
 In a setting with two classes, ![\\hat{p}\_{m1}=1-\\hat{p}\_{m2}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bm1%7D%3D1-%5Chat%7Bp%7D_%7Bm2%7D "\hat{p}_{m1}=1-\hat{p}_{m2}"). ![\\hat{p}\_{mk}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bmk%7D "\hat{p}_{mk}") represents the proportion of observations in the *m*th region that are from the *k*th class. Here ![k=2](https://latex.codecogs.com/png.latex?k%3D2 "k=2").
 
@@ -32,15 +32,28 @@ legend("topright", legend = c("classification error", "gini index", "cross-entro
 
 <img src="chap8_files/figure-markdown_github/unnamed-chunk-1-1.png" style="display: block; margin: auto;" />
 
-4.
-==
-
 4a.
 ---
 
 Tree sktched corresponding to the partition diagram of the predictor space.
-x1 &lt; 1 \_\_\_\_\_\_\_\_\_|\_\_\_\_\_\_\_\_\_\_ | | | | x2 &lt; 1 5 \_\_\_\_\_|\_\_\_\_\_ | | | | x1 &lt; 0 15
-\_\_\_\_\_|\_\_\_\_\_ | | | | 3 x2 &lt; 0 \_\_\_\_\_|\_\_\_\_\_ | | | | 10 0
+
+                     x1 < 1
+               _________|__________
+               |                  |
+               |                  |
+            x2 < 1                5
+          _____|_____
+          |         |
+          |         |
+       x1 < 0       15       
+     _____|_____
+     |         |
+     |         |
+     3      x2 < 0
+          _____|_____
+          |         |
+          |         |
+          10        0
 
 4b.
 ---
