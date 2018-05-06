@@ -7,6 +7,7 @@ May 6, 2018
 ==
 
 In a setting with two classes, ![\\hat{p}\_{m1}=1-\\hat{p}\_{m2}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bm1%7D%3D1-%5Chat%7Bp%7D_%7Bm2%7D "\hat{p}_{m1}=1-\hat{p}_{m2}"). ![\\hat{p}\_{mk}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bmk%7D "\hat{p}_{mk}") represents the proportion of observations in the *m*th region that are from the *k*th class. Here ![k=2](https://latex.codecogs.com/png.latex?k%3D2 "k=2").
+
 *Classfication error:*
 
 ![ E=1-\\underset{k}{\\text{max}}\\left(\\hat{p}\_{mk} \\right) ](https://latex.codecogs.com/png.latex?%20E%3D1-%5Cunderset%7Bk%7D%7B%5Ctext%7Bmax%7D%7D%5Cleft%28%5Chat%7Bp%7D_%7Bmk%7D%20%5Cright%29%20 " E=1-\underset{k}{\text{max}}\left(\hat{p}_{mk} \right) ")
