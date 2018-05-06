@@ -80,6 +80,12 @@ text(x = 1, y = 1.5, labels = c(0.21))
 
 <img src="chap8_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
+5.
+--
+
+Under majority vote approach, 6 out of 10 estimates of ![P(\\text{Class is Red}|X)](https://latex.codecogs.com/png.latex?P%28%5Ctext%7BClass%20is%20Red%7D%7CX%29 "P(\text{Class is Red}|X)") that are greater than or equal to 0.5. So we assume ![P(\\text{Class is Red}|X) \\geq 0.5](https://latex.codecogs.com/png.latex?P%28%5Ctext%7BClass%20is%20Red%7D%7CX%29%20%5Cgeq%200.5 "P(\text{Class is Red}|X) \geq 0.5"), then the samples are classfied to **red** class.
+Under average probability approach, the average probability of 10 estimate of ![P(\\text{Class is Red}|X)](https://latex.codecogs.com/png.latex?P%28%5Ctext%7BClass%20is%20Red%7D%7CX%29 "P(\text{Class is Red}|X)") is 0.45. So we assume ![P(\\text{Class is Red}|X) &lt; 0.5](https://latex.codecogs.com/png.latex?P%28%5Ctext%7BClass%20is%20Red%7D%7CX%29%20%3C%200.5 "P(\text{Class is Red}|X) < 0.5"), then the samples are classfied to the other **green** class.
+
 ``` r
 p = c(0.1, 0.15, 0.2, 0.2, 0.55, 0.6, 0.6, 0.65, 0.7, 0.75)
 sum(p >= 0.5) > sum(p < 0.5)
@@ -92,3 +98,30 @@ mean(p)
 ```
 
     ## [1] 0.45
+
+7.
+--
+
+We will try a more comprehensive range of values for `mtry` (![p,\\frac{p}{2},\\sqrt{p}](https://latex.codecogs.com/png.latex?p%2C%5Cfrac%7Bp%7D%7B2%7D%2C%5Csqrt%7Bp%7D "p,\frac{p}{2},\sqrt{p}")) and `ntree` (from 1 to 500). Test errors will be plotted from random forest method using the above `mtry` and `ntree` values.
+
+``` r
+library(ISLR)
+library(MASS)
+library(randomForest)
+set.seed(1)
+train = sample(nrow(Boston), nrow(Boston)/2)
+p = ncol(Boston) - 1
+rf.boston.p = randomForest(medv ~ ., data = Boston, subset = train, xtest = Boston[-train, -14], ytest = Boston[-train, 14], 
+    mtry = p, ntree = 500)
+rf.boston.p2 = randomForest(medv ~ ., data = Boston, subset = train, xtest = Boston[-train, -14], ytest = Boston[-train, 
+    14], mtry = p/2, ntree = 500)
+rf.boston.psq = randomForest(medv ~ ., data = Boston, subset = train, xtest = Boston[-train, -14], ytest = Boston[-train, 
+    14], mtry = sqrt(p), ntree = 500)
+
+plot(1:500, rf.boston.p$test$mse, col = "green", type = "l", xlab = "Number of Trees", ylab = "Test MSE", ylim = c(10, 22))
+points(1:500, rf.boston.p2$test$mse, col = "red", type = "l")
+points(1:500, rf.boston.psq$test$mse, col = "blue", type = "l")
+legend("topright", c("m=p", "m=p/2", expression(paste("m=", sqrt(p)))), col = c("green", "red", "blue"), cex = 1, lty = 1)
+```
+
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /> A signal regression tree has test MSE of about 20. As the number of trees increases, the test MSE drops and stablizes at about 200 trees. *Random forests* (![m&lt;p](https://latex.codecogs.com/png.latex?m%3Cp "m<p")) lead to a slight improvement over *bagging* (![m=p](https://latex.codecogs.com/png.latex?m%3Dp "m=p")).
