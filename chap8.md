@@ -4,7 +4,7 @@ Hongyun Wang
 May 6, 2018
 
 3.
---
+==
 
 In a setting with two classes, ![\\hat{p}\_{m1}=1-\\hat{p}\_{m2}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bm1%7D%3D1-%5Chat%7Bp%7D_%7Bm2%7D "\hat{p}_{m1}=1-\hat{p}_{m2}"). ![\\hat{p}\_{mk}](https://latex.codecogs.com/png.latex?%5Chat%7Bp%7D_%7Bmk%7D "\hat{p}_{mk}") represents the proportion of observations in the *m*th region that are from the *k*th class. Here ![k=2](https://latex.codecogs.com/png.latex?k%3D2 "k=2").
 
@@ -31,6 +31,9 @@ legend("topright", legend = c("classification error", "gini index", "cross-entro
 ```
 
 <img src="chap8_files/figure-markdown_github/unnamed-chunk-1-1.png" style="display: block; margin: auto;" />
+
+4.
+==
 
 4a.
 ---
@@ -124,4 +127,6 @@ points(1:500, rf.boston.psq$test$mse, col = "blue", type = "l")
 legend("topright", c("m=p", "m=p/2", expression(paste("m=", sqrt(p)))), col = c("green", "red", "blue"), cex = 1, lty = 1)
 ```
 
-<img src="chap8_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /> A signal regression tree has test MSE of about 20. As the number of trees increases, the test MSE drops and stablizes at about 200 trees. *Random forests* (![m&lt;p](https://latex.codecogs.com/png.latex?m%3Cp "m<p")) lead to a slight improvement over *bagging* (![m=p](https://latex.codecogs.com/png.latex?m%3Dp "m=p")).
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+
+A signal regression tree has test MSE of about 20. As the number of trees increases, the test MSE drops and stablizes at about 200 trees. *Random forests* (![m&lt;p](https://latex.codecogs.com/png.latex?m%3Cp "m<p")) lead to a slight improvement over *bagging* (![m=p](https://latex.codecogs.com/png.latex?m%3Dp "m=p")).
