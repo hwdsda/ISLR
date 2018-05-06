@@ -38,26 +38,14 @@ legend("topright", legend = c("classification error", "gini index", "cross-entro
 4a.
 ---
 
-                     x1 < 1
-               _________|__________
-               |                  |
-               |                  |
-            x2 < 1                5
-          _____|_____
-          |         |
-          |         |
-       x1 < 0       15       
-     _____|_____
-     |         |
-     |         |
-     3      x2 < 0
-          _____|_____
-          |         |
-          |         |
-          10        0
+Tree sktched corresponding to the partition diagram of the predictor space.
+x1 &lt; 1 \_\_\_\_\_\_\_\_\_|\_\_\_\_\_\_\_\_\_\_ | | | | x2 &lt; 1 5 \_\_\_\_\_|\_\_\_\_\_ | | | | x1 &lt; 0 15
+\_\_\_\_\_|\_\_\_\_\_ | | | | 3 x2 &lt; 0 \_\_\_\_\_|\_\_\_\_\_ | | | | 10 0
 
 4b.
 ---
+
+Diagram created corresponding to the tree.
 
 ``` r
 par(xpd = NA)
