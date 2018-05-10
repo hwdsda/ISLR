@@ -1,7 +1,7 @@
 Chapter 8 Tree-Based Methods
 ================
 Hongyun Wang
-May 8, 2018
+May 10, 2018
 
 3.
 ==
@@ -257,8 +257,8 @@ The test MSE was improved to 2.59 by using the *bagging* approach. Three most im
 ``` r
 rf.test.mse = rep(NA, 10)
 for (i in seq(10)) {
-    rf.test.mse1 = rep(NA, 50)
-    for (j in seq(50)) {
+    rf.test.mse1 = rep(NA, 10)
+    for (j in seq(10)) {
         rf.carseats = randomForest(Sales ~ ., data = Carseats.train, xtest = Carseats.test[, -1], ytest = Carseats.test[, 
             1], mtry = i, ntree = 500, importance = T)
         rf.test.mse1[j] = rf.carseats$test$mse[500]
@@ -268,8 +268,8 @@ for (i in seq(10)) {
 rf.test.mse
 ```
 
-    ##  [1] 5.166782 3.815838 3.285805 2.982539 2.827815 2.716339 2.650484
-    ##  [8] 2.612850 2.588404 2.572683
+    ##  [1] 5.206163 3.827338 3.297875 3.015945 2.816126 2.704394 2.661840
+    ##  [8] 2.600174 2.576479 2.573734
 
 ``` r
 which.min(rf.test.mse)
@@ -489,3 +489,148 @@ pred.pruned = predict(oj.pruned, OJ.test, type = "class")
     ## [1] 0.2148
 
 The test error rate for the unpruned tree is **0.2185**, which is slightly higher than training error rate **0.2148** for the pruned tree.
+
+10.
+---
+
+10a.
+----
+
+``` r
+library(ISLR)
+suppressMessages(library(dplyr))
+attach(Hitters)
+Hitters = Hitters %>% dplyr::filter(!is.na(Salary)) %>% mutate(Salary = log(Salary))
+```
+
+10b.
+----
+
+``` r
+train = Hitters[1:200, ]
+test = Hitters[-c(1:200), ]
+```
+
+10c.
+----
+
+``` r
+suppressMessages(library(gbm))
+set.seed(1)
+lambdas = 10^seq(-10, -0.1, by = 0.1)
+
+train.errors = rep(NA, length(lambdas))
+test.errors = rep(NA, length(lambdas))
+for (i in seq_along(lambdas)) {
+    boost.hitters = gbm(Salary ~ ., data = train, distribution = "gaussian", n.trees = 1000, shrinkage = lambdas[i])
+    train.pred = predict(boost.hitters, newdata = train, n.trees = 1000)
+    test.pred = predict(boost.hitters, newdata = test, n.trees = 1000)
+    train.errors[i] = mean((train$Salary - train.pred)^2)
+    test.errors[i] = mean((test$Salary - test.pred)^2)
+}
+
+plot(lambdas, train.errors, type = "b", xlab = "Shrinkage", ylab = "Train MSE", col = "forestgreen", pch = 20)
+```
+
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
+
+10d.
+----
+
+``` r
+plot(lambdas, test.errors, type = "b", xlab = "Shrinkage", ylab = "Test MSE", col = "blue", pch = 20)
+```
+
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
+
+``` r
+min(test.errors)
+```
+
+    ## [1] 0.2540265
+
+``` r
+lambdas[which.min(test.errors)]
+```
+
+    ## [1] 0.07943282
+
+The minimum test MSE **0.254** was achieved at **lambda** = **0.0794**
+
+10e.
+----
+
+Fit linear model.
+
+``` r
+lm.fit = lm(Salary ~ ., data = train)
+lm.pred = predict(lm.fit, test)
+mean((test$Salary - lm.pred)^2)
+```
+
+    ## [1] 0.4917959
+
+Fit lasso.
+
+``` r
+suppressMessages(library(glmnet))
+set.seed(1)
+x = model.matrix(Salary ~ ., data = train)
+y = train$Salary
+x.test = model.matrix(Salary ~ ., data = test)
+lasso.fit = glmnet(x, y, alpha = 1)
+lasso.pred = predict(lasso.fit, s = 0.01, newx = x.test)
+mean((test$Salary - lasso.pred)^2)
+```
+
+    ## [1] 0.4700537
+
+The *linear model* has test MSE 0.4918 and *lasso model* has test MSE 0.4701. Both test MSE are higher than test MSE from *boosting*.
+
+10f.
+----
+
+``` r
+boost.best = gbm(Salary ~ ., data = train, distribution = "gaussian", n.trees = 1000, shrinkage = lambdas[which.min(test.errors)])
+summary(boost.best)
+```
+
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-26-1.png" style="display: block; margin: auto;" />
+
+    ##                 var    rel.inf
+    ## CAtBat       CAtBat 16.4028631
+    ## CRuns         CRuns 15.0957847
+    ## PutOuts     PutOuts  9.4543457
+    ## CWalks       CWalks  6.7508573
+    ## CRBI           CRBI  6.4133341
+    ## CHmRun       CHmRun  6.0778920
+    ## Walks         Walks  6.0434466
+    ## Years         Years  5.9694890
+    ## Hits           Hits  4.9492273
+    ## Assists     Assists  4.5706789
+    ## RBI             RBI  4.3533790
+    ## AtBat         AtBat  3.1830285
+    ## HmRun         HmRun  2.9616488
+    ## Runs           Runs  2.5244563
+    ## Errors       Errors  2.2067482
+    ## CHits         CHits  1.5986893
+    ## Division   Division  0.6707407
+    ## NewLeague NewLeague  0.6083337
+    ## League       League  0.1650564
+
+`CAtBat` and `CRuns` are the two most important predictors in the boosted model.
+
+10g.
+----
+
+``` r
+suppressMessages(library(randomForest))
+set.seed(1)
+bag.hitters = randomForest(Salary ~ ., data = train, ntree = 500, mtry = 19)
+bag.pred = predict(bag.hitters, test)
+mean((test$Salary - bag.pred)^2)
+```
+
+    ## [1] 0.2299324
+
+The *bagging* test MSE 0.2299 is lower than *boosting* test MSE.
