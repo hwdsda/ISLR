@@ -585,7 +585,7 @@ mean((test$Salary - lasso.pred)^2)
 
     ## [1] 0.4700537
 
-The *linear model* has test MSE 0.4918 and *lasso model* has test MSE 0.4701. Both test MSE are higher than test MSE from *boosting*.
+The *linear model* has test MSE **0.4918** and *lasso model* has test MSE **0.4701**. Both test MSE are higher than test MSE from *boosting*.
 
 10f.
 ----
@@ -633,4 +633,162 @@ mean((test$Salary - bag.pred)^2)
 
     ## [1] 0.2299324
 
-The *bagging* test MSE 0.2299 is lower than *boosting* test MSE.
+The *bagging* test MSE **0.2299** is lower than *boosting* test MSE **0.254**.
+
+11.
+===
+
+11a.
+----
+
+``` r
+library(ISLR)
+attach(Caravan)
+Caravan$Purchase = ifelse(Caravan$Purchase == "Yes", 1, 0)
+train = Caravan[1:1000, ]
+test = Caravan[-c(1:1000), ]
+```
+
+11b.
+----
+
+``` r
+suppressMessages(library(gbm))
+boost.caravan = gbm(Purchase ~ ., data = train, distribution = "bernoulli", n.trees = 1000, shrinkage = 0.01)
+summary(boost.caravan)
+```
+
+<img src="chap8_files/figure-markdown_github/unnamed-chunk-29-1.png" style="display: block; margin: auto;" />
+
+    ##               var    rel.inf
+    ## PPERSAUT PPERSAUT 14.6204690
+    ## MKOOPKLA MKOOPKLA 10.0263268
+    ## MOPLHOOG MOPLHOOG  7.3973343
+    ## MBERMIDD MBERMIDD  5.6685302
+    ## PBRAND     PBRAND  5.2448387
+    ## MGODGE     MGODGE  4.4023174
+    ## ABRAND     ABRAND  4.1216677
+    ## MINK3045 MINK3045  3.5350714
+    ## MAUT2       MAUT2  3.0570639
+    ## MOSTYPE   MOSTYPE  3.0540644
+    ## MSKA         MSKA  2.4194052
+    ## MSKC         MSKC  2.3126976
+    ## PWAPART   PWAPART  2.2413430
+    ## MBERARBG MBERARBG  2.1373796
+    ## MAUT1       MAUT1  2.0966958
+    ## MGODOV     MGODOV  2.0207351
+    ## MGODPR     MGODPR  1.6284269
+    ## PBYSTAND PBYSTAND  1.4378832
+    ## MFWEKIND MFWEKIND  1.4325370
+    ## MINKGEM   MINKGEM  1.3317260
+    ## MSKB1       MSKB1  1.2674748
+    ## MRELOV     MRELOV  1.2614888
+    ## MRELGE     MRELGE  1.1982022
+    ## MINK7512 MINK7512  1.1881647
+    ## MBERHOOG MBERHOOG  1.1289655
+    ## MFGEKIND MFGEKIND  1.1241997
+    ## MAUT0       MAUT0  1.1222460
+    ## MOPLMIDD MOPLMIDD  1.0898574
+    ## MGODRK     MGODRK  1.0289785
+    ## MINKM30   MINKM30  1.0246593
+    ## APERSAUT APERSAUT  0.9804827
+    ## MOSHOOFD MOSHOOFD  0.7948087
+    ## MINK4575 MINK4575  0.7509025
+    ## MBERBOER MBERBOER  0.7327332
+    ## MHHUUR     MHHUUR  0.6997461
+    ## MHKOOP     MHKOOP  0.6319989
+    ## MGEMOMV   MGEMOMV  0.5753639
+    ## MBERARBO MBERARBO  0.4733205
+    ## PMOTSCO   PMOTSCO  0.4301550
+    ## PLEVEN     PLEVEN  0.3638372
+    ## MSKD         MSKD  0.3517098
+    ## MZFONDS   MZFONDS  0.3080221
+    ## MINK123M MINK123M  0.3063307
+    ## MGEMLEEF MGEMLEEF  0.2467951
+    ## MFALLEEN MFALLEEN  0.2293346
+    ## MZPART     MZPART  0.2237246
+    ## MSKB2       MSKB2  0.1561550
+    ## MOPLLAAG MOPLLAAG  0.1238291
+    ## MAANTHUI MAANTHUI  0.0000000
+    ## MRELSA     MRELSA  0.0000000
+    ## MBERZELF MBERZELF  0.0000000
+    ## PWABEDR   PWABEDR  0.0000000
+    ## PWALAND   PWALAND  0.0000000
+    ## PBESAUT   PBESAUT  0.0000000
+    ## PVRAAUT   PVRAAUT  0.0000000
+    ## PAANHANG PAANHANG  0.0000000
+    ## PTRACTOR PTRACTOR  0.0000000
+    ## PWERKT     PWERKT  0.0000000
+    ## PBROM       PBROM  0.0000000
+    ## PPERSONG PPERSONG  0.0000000
+    ## PGEZONG   PGEZONG  0.0000000
+    ## PWAOREG   PWAOREG  0.0000000
+    ## PZEILPL   PZEILPL  0.0000000
+    ## PPLEZIER PPLEZIER  0.0000000
+    ## PFIETS     PFIETS  0.0000000
+    ## PINBOED   PINBOED  0.0000000
+    ## AWAPART   AWAPART  0.0000000
+    ## AWABEDR   AWABEDR  0.0000000
+    ## AWALAND   AWALAND  0.0000000
+    ## ABESAUT   ABESAUT  0.0000000
+    ## AMOTSCO   AMOTSCO  0.0000000
+    ## AVRAAUT   AVRAAUT  0.0000000
+    ## AAANHANG AAANHANG  0.0000000
+    ## ATRACTOR ATRACTOR  0.0000000
+    ## AWERKT     AWERKT  0.0000000
+    ## ABROM       ABROM  0.0000000
+    ## ALEVEN     ALEVEN  0.0000000
+    ## APERSONG APERSONG  0.0000000
+    ## AGEZONG   AGEZONG  0.0000000
+    ## AWAOREG   AWAOREG  0.0000000
+    ## AZEILPL   AZEILPL  0.0000000
+    ## APLEZIER APLEZIER  0.0000000
+    ## AFIETS     AFIETS  0.0000000
+    ## AINBOED   AINBOED  0.0000000
+    ## ABYSTAND ABYSTAND  0.0000000
+
+`PPERSAUT` is the most important predictor.
+
+11c.
+----
+
+``` r
+boost.prob = predict(boost.caravan, test, n.trees = 1000, type = "response")
+boost.pred = ifelse(boost.prob > 0.2, 1, 0)
+(table1 = table(Actual = test$Purchase, Prediction = boost.pred))
+```
+
+    ##       Prediction
+    ## Actual    0    1
+    ##      0 4411  122
+    ##      1  257   32
+
+``` r
+(rate1 = paste0(round(table1[2, 2] * 100/apply(table1, 2, sum)[2], 0), "%"))
+```
+
+    ## [1] "21%"
+
+There are about **21%** people predicted to make a purchase do in fact make one.
+
+Fit with logistic regression model
+
+``` r
+lm.caravan = glm(Purchase ~ ., data = train, family = binomial)
+lm.prob = predict(lm.caravan, test, type = "response")
+lm.pred = ifelse(lm.prob > 0.2, 1, 0)
+(table2 = table(Actual = test$Purchase, Prediction = lm.pred))
+```
+
+    ##       Prediction
+    ## Actual    0    1
+    ##      0 4183  350
+    ##      1  231   58
+
+``` r
+(rate2 = paste0(round(table2[2, 2] * 100/apply(table2, 2, sum)[2], 0), "%"))
+```
+
+    ## [1] "14%"
+
+Using *logistic model*, about **14%** people predicted to make a purchase do in fact make one.This percentage is lower than **21%**, which is obtained using *boosting*.
